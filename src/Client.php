@@ -3,7 +3,6 @@
 namespace Amadeus;
 
 use Amadeus\Auth;
-use Amadeus\Contract\CacheAwareInterface;
 use Amadeus\Request;
 use Amadeus\Response;
 use Amadeus\Response\Mapper\FlightOfferMapper;
@@ -11,18 +10,14 @@ use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
-use Psr\Cache\CacheItemInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Contracts\Cache\CacheInterface;
 
-class Client implements LoggerAwareInterface, CacheAwareInterface
+class Client implements LoggerAwareInterface
 {
-    private const DEV_ENDPOINT = 'https://test.api.amadeus.com';
+    protected const DEV_ENDPOINT = 'https://test.api.amadeus.com';
 
-    private const PROD_ENDPOINT = '';
-
-    private const TOKEN_CACHE_KEY = 'amadeus-auth-token';
+    protected const PROD_ENDPOINT = '';
 
     /** @var string */
     private $apiKey;
@@ -34,42 +29,26 @@ class Client implements LoggerAwareInterface, CacheAwareInterface
     private $isProductionEnvironment;
 
     /** @var HttpClient */
-    private $http;
+    protected $http;
 
     /** @var Auth\Token */
-    private $token;
+    protected $token;
 
     /** @var LoggerInterface */
-    private $logger;
+    protected $logger;
 
-    /** @var CacheInterface */
-    private $cache;
+    public function __construct(Params $params)
+    {
+        $this->apiKey = $params->getApiKey();
+        $this->apiSecret = $params->getApiSecret();
+        $this->isProductionEnvironment = $params->isProductionEnvironment();
+        $this->logger = $params->getLogger();
 
-    public function __construct(
-        string $apiKey,
-        string $apiSecret,
-        bool $isProductionEnvironment = false,
-        LoggerInterface $logger = null,
-        CacheInterface $cache = null
-    ) {
-        $this->apiKey = $apiKey;
-        $this->apiSecret = $apiSecret;
-        $this->isProductionEnvironment = $isProductionEnvironment;
-        $this->logger = $logger;
-        $this->cache = $cache;
-
-        $this->http = $this->createHttpClient($logger);
+        $this->http = $this->createHttpClient($params->getLogger());
     }
 
     public function getToken(): Auth\Token
     {
-        if ($this->cache instanceof CacheInterface) {
-            /** @var CacheItemInterface $item */
-            $item = $this->cache->getItem(self::TOKEN_CACHE_KEY);
-            /** @var Auth\Token $token */
-            $this->token = $item->get();
-        }
-
         if ($this->token === null || $this->token->needsRefresh()) {
             $this->setToken($this->authorize());
         }
@@ -79,18 +58,6 @@ class Client implements LoggerAwareInterface, CacheAwareInterface
 
     public function setToken(Auth\Token $token): void
     {
-        if ($this->cache instanceof CacheInterface) {
-            /** @var CacheItemInterface $cacheItem */
-            $cacheItem = $this->cache->getItem(self::TOKEN_CACHE_KEY);
-
-            $expiresAt = new \DateTimeImmutable('@' . $token->getExpiresAt());
-
-            $cacheItem->expiresAt($expiresAt);
-            $cacheItem->set($token);
-
-            $this->cache->save($cacheItem);
-        }
-
         $this->token = $token;
     }
 
@@ -99,11 +66,6 @@ class Client implements LoggerAwareInterface, CacheAwareInterface
         $this->logger = $logger;
 
         $this->http = $this->createHttpClient($logger);
-    }
-
-    public function setCache(CacheInterface $cache)
-    {
-        $this->cache = $cache;
     }
 
     /**
@@ -128,7 +90,7 @@ class Client implements LoggerAwareInterface, CacheAwareInterface
         return $mapper->mapJsonArray($result);
     }
 
-    private function authorize(): Auth\Token
+    protected function authorize(): Auth\Token
     {
         $response = $this->http->post('/v1/security/oauth2/token', [
             'headers' => [
@@ -158,7 +120,7 @@ class Client implements LoggerAwareInterface, CacheAwareInterface
         return $token;
     }
 
-    private function createHttpClient(?LoggerInterface $logger): HttpClient
+    protected function createHttpClient(?LoggerInterface $logger): HttpClient
     {
         $httpHandler = HandlerStack::create();
         if ($logger !== null) {
@@ -175,7 +137,7 @@ class Client implements LoggerAwareInterface, CacheAwareInterface
         ]);
     }
 
-    private function logErrorsIfExist(string $result): void
+    protected function logErrorsIfExist(string $result): void
     {
         $response = \json_decode($result);
 

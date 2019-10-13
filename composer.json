@@ -1,6 +1,6 @@
 {
     "name": "therealartz/amadeus-php",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "require": {
         "php": ">=7.3",
         "ext-json": "*",
@@ -10,11 +10,17 @@
     },
     "require-dev": {
         "symfony/var-dumper": "^4.3",
-        "monolog/monolog": "^2.0"
+        "monolog/monolog": "^2.0",
+        "phpunit/phpunit": "^8.4"
     },
     "autoload": {
         "psr-4": {
             "Amadeus\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Amadeus\\Tests\\": "tests/"
         }
     },
     "description": "PHP library for the Amadeus Self-Service travel APIs",
