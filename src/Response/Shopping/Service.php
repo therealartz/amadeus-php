@@ -28,7 +28,7 @@ class Service implements Arrayable
     public function toArray(): array
     {
         return [
-            'segments' => array_map(function (Segment $segment) {
+            'segments' => \array_map(function (Segment $segment) {
                 return $segment->toArray();
             }, $this->getSegments()),
         ];

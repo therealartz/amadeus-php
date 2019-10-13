@@ -3,7 +3,6 @@
 namespace Amadeus\Request\Shopping;
 
 use Amadeus\Request\RequestOptionsInterface;
-use DateTimeInterface;
 
 class FlightOffersRequestOptions implements RequestOptionsInterface
 {
@@ -50,8 +49,8 @@ class FlightOffersRequestOptions implements RequestOptionsInterface
      * FlightOffersRequestOptions constructor.
      * @param string $origin
      * @param string $destination
-     * @param DateTimeInterface $departureDate
-     * @param DateTimeInterface|null $returnDate
+     * @param \DateTimeInterface $departureDate
+     * @param \DateTimeInterface|null $returnDate
      * @param int $adults
      * @param int $children
      * @param int $infants
@@ -61,16 +60,16 @@ class FlightOffersRequestOptions implements RequestOptionsInterface
      * @param string $currency
      * @param int $maxResults
      * @param int|null $maxPrice
-     * @param DateTimeInterface|null $arrivalBy
-     * @param DateTimeInterface|null $returnBy
+     * @param \DateTimeInterface|null $arrivalBy
+     * @param \DateTimeInterface|null $returnBy
      * @param string[] $includeAirlines
      * @param string[] $excludeAirlines
      */
     public function __construct(
         string $origin,
         string $destination,
-        DateTimeInterface $departureDate,
-        ?DateTimeInterface $returnDate = null,
+        \DateTimeInterface $departureDate,
+        ?\DateTimeInterface $returnDate = null,
         int $adults = 1,
         int $children = 0,
         int $infants = 0,
@@ -80,8 +79,8 @@ class FlightOffersRequestOptions implements RequestOptionsInterface
         string $currency = 'USD',
         int $maxResults = 50,
         int $maxPrice = null,
-        ?DateTimeInterface $arrivalBy = null,
-        ?DateTimeInterface $returnBy = null,
+        ?\DateTimeInterface $arrivalBy = null,
+        ?\DateTimeInterface $returnBy = null,
         array $includeAirlines = [],
         array $excludeAirlines = []
     ) {
@@ -124,22 +123,22 @@ class FlightOffersRequestOptions implements RequestOptionsInterface
         $this->destination = $destination;
     }
 
-    public function getDepartureDate(): DateTimeInterface
+    public function getDepartureDate(): \DateTimeInterface
     {
         return $this->departureDate;
     }
 
-    public function setDepartureDate(DateTimeInterface $departureDate): void
+    public function setDepartureDate(\DateTimeInterface $departureDate): void
     {
         $this->departureDate = $departureDate;
     }
 
-    public function getReturnDate(): ?DateTimeInterface
+    public function getReturnDate(): ?\DateTimeInterface
     {
         return $this->returnDate;
     }
 
-    public function setReturnDate(?DateTimeInterface $returnDate): void
+    public function setReturnDate(?\DateTimeInterface $returnDate): void
     {
         $this->returnDate = $returnDate;
     }
@@ -234,22 +233,22 @@ class FlightOffersRequestOptions implements RequestOptionsInterface
         $this->maxPrice = $maxPrice;
     }
 
-    public function getArrivalBy(): ?DateTimeInterface
+    public function getArrivalBy(): ?\DateTimeInterface
     {
         return $this->arrivalBy;
     }
 
-    public function setArrivalBy(?DateTimeInterface $arrivalBy): void
+    public function setArrivalBy(?\DateTimeInterface $arrivalBy): void
     {
         $this->arrivalBy = $arrivalBy;
     }
 
-    public function getReturnBy(): ?DateTimeInterface
+    public function getReturnBy(): ?\DateTimeInterface
     {
         return $this->returnBy;
     }
 
-    public function setReturnBy(?DateTimeInterface $returnBy): void
+    public function setReturnBy(?\DateTimeInterface $returnBy): void
     {
         $this->returnBy = $returnBy;
     }
@@ -302,8 +301,8 @@ class FlightOffersRequestOptions implements RequestOptionsInterface
             'currency' => $this->getCurrency(),
             'max' => $this->getMaxResults(),
             'maxPrice' => $this->getMaxPrice(),
-            'arrivalBy' => $this->getArrivalBy() ? $this->getArrivalBy()->format(DateTimeInterface::ISO8601) : null,
-            'returnBy' => $this->getReturnBy() ? $this->getReturnBy()->format(DateTimeInterface::ISO8601) : null,
+            'arrivalBy' => $this->getArrivalBy() ? $this->getArrivalBy()->format(\DateTimeInterface::ISO8601) : null,
+            'returnBy' => $this->getReturnBy() ? $this->getReturnBy()->format(\DateTimeInterface::ISO8601) : null,
             'includeAirlines' => implode(',', $this->getIncludeAirlines()),
             'excludeAirlines' => implode(',', $this->getExcludeAirlines()),
         ];

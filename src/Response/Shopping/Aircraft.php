@@ -23,7 +23,7 @@ class Aircraft implements Arrayable
 
     public function getName(): string
     {
-        return trim($this->name);
+        return \trim($this->name);
     }
 
     public function toArray(): array

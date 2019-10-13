@@ -3,7 +3,6 @@
 namespace Amadeus\Response\Shopping;
 
 use Amadeus\Contract\Arrayable;
-use DateInterval;
 
 class FlightSegment implements Arrayable
 {
@@ -25,7 +24,7 @@ class FlightSegment implements Arrayable
         FlightIdentifier $flightIdentifier,
         Aircraft $aircraft,
         FlightIdentifier $operatingFlightIdentifier,
-        DateInterval $duration
+        \DateInterval $duration
     ) {
         $this->departure = $departure;
         $this->arrival = $arrival;
@@ -60,7 +59,7 @@ class FlightSegment implements Arrayable
         return $this->operatingFlightIdentifier;
     }
 
-    public function getDuration(): DateInterval
+    public function getDuration(): \DateInterval
     {
         return $this->duration;
     }

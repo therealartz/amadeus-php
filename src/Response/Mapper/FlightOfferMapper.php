@@ -5,9 +5,6 @@ namespace Amadeus\Response\Mapper;
 use Amadeus\Contract\Arrayable;
 use Amadeus\Exception\MapperException;
 use Amadeus\Response\Shopping;
-use DateInterval;
-use DateTimeImmutable;
-use Throwable;
 
 class FlightOfferMapper implements MapperInterface
 {
@@ -15,18 +12,18 @@ class FlightOfferMapper implements MapperInterface
 
     public function mapJsonArray(string $json): array
     {
-        $response = json_decode($json, true);
+        $response = \json_decode($json, true);
 
         $results = [];
 
-        $dictionaries = $response['dictionaries'];
+        $dictionaries = $response['dictionaries'] ?? [];
 
-        if (is_array($response['data'])) {
+        if (\is_array($response['data'] ?? null)) {
             foreach ($response['data'] as $item) {
                 if ($item['type'] === self::AMADEUS_TYPE) {
                     try {
                         $results[] = $this->flightOfferToClass($item, $dictionaries);
-                    } catch (Throwable $exception) {
+                    } catch (\Throwable $exception) {
                         throw new MapperException('Mapping error', 0, $exception);
                     }
                 }
@@ -38,10 +35,10 @@ class FlightOfferMapper implements MapperInterface
 
     public function mapJson(string $json): ?Shopping\FlightOffer
     {
-        $response = json_decode($json, true);
+        $response = \json_decode($json, true);
 
         if ($response['type'] !== self::AMADEUS_TYPE) {
-            throw new MapperException(sprintf(
+            throw new MapperException(\sprintf(
                 __METHOD__ . ': invalid argument passed type %s. Expected: %s',
                 $response['type'],
                 self::AMADEUS_TYPE
@@ -59,9 +56,9 @@ class FlightOfferMapper implements MapperInterface
             if ($object instanceof Shopping\FlightOffer && $object instanceof Arrayable) {
                 $items[] = $object->toArray();
             } else {
-                throw new MapperException(sprintf(
+                throw new MapperException(\sprintf(
                     __METHOD__ . ': invalid argument passed type %s. Expected: %s and %s',
-                    get_class($object),
+                    \get_class($object),
                     Shopping\FlightOffer::class,
                     Arrayable::class,
                 ));
@@ -91,12 +88,12 @@ class FlightOfferMapper implements MapperInterface
                         new Shopping\Gateway(
                             $segment['flightSegment']['departure']['iataCode'],
                             $segment['flightSegment']['departure']['terminal'] ?? '',
-                            new DateTimeImmutable($segment['flightSegment']['departure']['at']),
+                            new \DateTimeImmutable($segment['flightSegment']['departure']['at']),
                         ),
                         new Shopping\Gateway(
                             $segment['flightSegment']['arrival']['iataCode'],
                             $segment['flightSegment']['arrival']['terminal'] ?? '',
-                            new DateTimeImmutable($segment['flightSegment']['arrival']['at']),
+                            new \DateTimeImmutable($segment['flightSegment']['arrival']['at']),
                         ),
                         new Shopping\FlightIdentifier(
                             $segment['flightSegment']['carrierCode'],
@@ -110,7 +107,7 @@ class FlightOfferMapper implements MapperInterface
                             $operatingCarrier,
                             $segment['flightSegment']['operating']['number'],
                         ),
-                        new DateInterval('P' . $segment['flightSegment']['duration']),
+                        new \DateInterval('P' . $segment['flightSegment']['duration']),
                     );
 
                     $pricingDetailPerAdult = new Shopping\PricingDetail(
@@ -120,7 +117,7 @@ class FlightOfferMapper implements MapperInterface
                         $segment['pricingDetailPerAdult']['fareBasis'],
                     );
 
-                    if (array_key_exists('pricingDetailPerChild', $segment)) {
+                    if (\array_key_exists('pricingDetailPerChild', $segment)) {
                         $pricingDetailPerChild = new Shopping\PricingDetail(
                             $segment['pricingDetailPerChild']['travelClass'],
                             $segment['pricingDetailPerChild']['fareClass'],
@@ -144,7 +141,7 @@ class FlightOfferMapper implements MapperInterface
                 $offerItem['pricePerAdult']['totalTaxes']
             );
 
-            if (array_key_exists('pricePerChild', $offerItem)) {
+            if (\array_key_exists('pricePerChild', $offerItem)) {
                 $pricePerChild = new Shopping\PriceItem(
                     $offerItem['pricePerChild']['total'],
                     $offerItem['pricePerChild']['totalTaxes']

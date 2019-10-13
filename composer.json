@@ -1,13 +1,16 @@
 {
     "name": "therealartz/amadeus-php",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "require": {
         "php": ">=7.3",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "psr/log": "^1.1",
+        "symfony/cache": "^4.3"
     },
     "require-dev": {
-        "symfony/var-dumper": "^4.3"
+        "symfony/var-dumper": "^4.3",
+        "monolog/monolog": "^2.0"
     },
     "autoload": {
         "psr-4": {

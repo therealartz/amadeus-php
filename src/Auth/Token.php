@@ -85,7 +85,7 @@ class Token
 
     public function needsRefresh(): bool
     {
-        return (time() - self::REFRESH_BUFFER) >= $this->getExpiresAt();
+        return (\time() - self::REFRESH_BUFFER) >= $this->getExpiresAt();
     }
 
     public function getHeaderString(): string

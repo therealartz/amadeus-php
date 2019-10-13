@@ -3,7 +3,7 @@
 namespace Amadeus\Response\Shopping;
 
 use Amadeus\Contract\Arrayable;
-use DateTimeImmutable;
+use DateTimeInterface;
 
 class Gateway implements Arrayable
 {
@@ -13,7 +13,7 @@ class Gateway implements Arrayable
 
     private $at;
 
-    public function __construct(string $iataCode, string $terminal, DateTimeImmutable $at)
+    public function __construct(string $iataCode, string $terminal, DateTimeInterface $at)
     {
         $this->iataCode = $iataCode;
         $this->terminal = $terminal;
@@ -30,7 +30,7 @@ class Gateway implements Arrayable
         return trim($this->terminal);
     }
 
-    public function getAt(): DateTimeImmutable
+    public function getAt(): DateTimeInterface
     {
         return $this->at;
     }

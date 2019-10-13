@@ -55,7 +55,7 @@ class OfferItem implements Arrayable
     public function toArray(): array
     {
         $array = [
-            'services' => array_map(function (Service $service) {
+            'services' => \array_map(function (Service $service) {
                 return $service->toArray();
             }, $this->getServices()),
             'price' => $this->getPrice()->toArray(),
