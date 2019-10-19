@@ -103,7 +103,6 @@ class Client implements LoggerAwareInterface
             ],
         ]);
 
-
         $result = \json_decode($response->getBody()->__toString());
 
         $token = new Auth\Token(
